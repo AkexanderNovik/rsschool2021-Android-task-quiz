@@ -1,5 +1,6 @@
 package com.rsschool.quiz
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.rsschool.quiz.databinding.FragmentQuizBinding
 
 class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
     private var viewBinding: FragmentQuizBinding? = null
+//    private val binding get() = requireNotNull(viewBinding)
     private val binding get() = requireNotNull(viewBinding)
     private var indexOfQuestion = 1
     private var listener: Comunicator? = null
@@ -31,11 +33,14 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         return view
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         var indexOfChosenAnswer = 0
         var text = ""
+        var chosenAnswer = 0
 
         when (indexOfQuestion) {
             1 -> indexOfChosenAnswer = arguments?.getInt(FIRST_RESULT_KEY) ?: 0
@@ -45,10 +50,15 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
             5 -> indexOfChosenAnswer = arguments?.getInt(FIFTH_RESULT_KEY) ?: 0
         }
 
+        viewBinding?.toolbar?.title = "Question $indexOfQuestion"
 
 
+        if (indexOfQuestion == 1) {
+            viewBinding?.previousButton?.isEnabled = false
+            viewBinding?.toolbar?.setNavigationIcon(null)
 
-        if (indexOfQuestion == 1) viewBinding?.previousButton?.isEnabled = false
+
+        }
         viewBinding?.nextButton?.isEnabled = false
 
 
@@ -57,6 +67,9 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         when (indexOfQuestion) {
             1 -> list = DataValues().arrayFirstQuestion.toMutableList()
             2 -> list = DataValues().arraySecondQuestion.toMutableList()
+            3-> list = DataValues().arrayThirdQuestion.toMutableList()
+            4 -> list = DataValues().arrayFourthQuestion.toMutableList()
+            5 -> list = DataValues().arrayFifthQuestion.toMutableList()
         }
 
         viewBinding?.question?.text = list[0]
@@ -66,7 +79,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         viewBinding?.optionFour?.text = list[4]
         viewBinding?.optionFive?.text = list[5]
 
-        var chosenAnswer = 0
+
 
         if (indexOfChosenAnswer != 0) {
             viewBinding?.radioGroup?.check(indexOfChosenAnswer)
@@ -89,10 +102,6 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
             if (viewBinding?.radioGroup?.checkedRadioButtonId !== -1) {
                 viewBinding?.nextButton?.isEnabled = true
                 chosenAnswer = viewBinding?.radioGroup?.checkedRadioButtonId ?: 0
-
-
-
-
             }
         }
 
@@ -112,6 +121,18 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
 
             if (chosenAnswer != 0) text = (view.findViewById(chosenAnswer) as RadioButton).text.toString()
             (activity as Comunicator)?.passData(indexOfQuestion , chosenAnswer, -1, text)
+        }
+
+
+
+
+
+//
+
+        viewBinding?.toolbar?.setNavigationOnClickListener {
+            if (chosenAnswer != 0) text =
+                (view.findViewById(chosenAnswer) as RadioButton).text.toString()
+            (activity as Comunicator)?.passData(indexOfQuestion, chosenAnswer, -1, text)
         }
     }
 

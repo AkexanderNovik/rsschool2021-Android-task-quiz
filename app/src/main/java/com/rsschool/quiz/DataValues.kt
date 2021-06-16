@@ -11,12 +11,12 @@ class DataValues {
         const val FIRST_QUESTION_CORRECT_ANSWER = FIRST_QUESTION_FIFTH_OPTION
 
         const val SECOND_QUESTION = "First question"
-        const val SECOND_QUESTION_FIRST_OPTION = "2323"
+        const val SECOND_QUESTION_FIRST_OPTION = "sdf"
         const val SECOND_QUESTION_SECOND_OPTION = "2323"
-        const val SECOND_QUESTION_THIRD_OPTION = "2323"
-        const val SECOND_QUESTION_FORTH_OPTION = "2323"
-        const val SECOND_QUESTION_FIFTH_OPTION = "2323"
-        const val SECOND_QUESTION_CORRECT_ANSWER = "2323"
+        const val SECOND_QUESTION_THIRD_OPTION = "ytuutyutyu"
+        const val SECOND_QUESTION_FORTH_OPTION = "!!!!!!!3"
+        const val SECOND_QUESTION_FIFTH_OPTION = "^^^^^"
+        const val SECOND_QUESTION_CORRECT_ANSWER = "77777"
 
         const val THIRD_QUESTION = "First question"
         const val THIRD_QUESTION_FIRST_OPTION = "2323"

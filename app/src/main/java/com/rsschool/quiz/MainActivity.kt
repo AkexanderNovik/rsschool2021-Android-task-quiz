@@ -8,22 +8,39 @@ import com.rsschool.quiz.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), Comunicator {
 
     private lateinit var binding: ActivityMainBinding
+    private var list= mutableListOf<Int>(0,0,0,0,0,0)
+
+    private var userAnswers = mutableListOf<String>("","","","","","")
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        openFragment(1, 0)
+        list= mutableListOf<Int>(0,0,0,0,0,0)
+        openFragment(1, list)
     }
 
-    private fun openFragment(indexFromFragment: Int, chosenAnswer: Int) {
-        val fragment: Fragment = FragmentQuiz.newInstance(indexFromFragment, chosenAnswer)
+    private fun openFragment(questionNumber: Int, list: MutableList <Int>) {
+        val fragment: Fragment = FragmentQuiz.newInstance(questionNumber, list)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, fragment).commit()
     }
 
-    override fun passData(previousChoose: Int, chosenAnswer: Int) {
-        openFragment(previousChoose, chosenAnswer)
+    override fun passData(questionNumber: Int, chosenAnswer: Int, i: Int, text: String) {
+        list[questionNumber] = chosenAnswer
+        userAnswers[questionNumber] = text
+        userAnswers
+        userAnswers
+
+        openFragment(questionNumber + i, list)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        list
+        userAnswers
     }
 }

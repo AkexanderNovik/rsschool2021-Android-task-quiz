@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import androidx.fragment.app.Fragment
 import com.rsschool.quiz.databinding.FragmentQuizBinding
 
@@ -25,8 +26,16 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
 
         viewBinding = FragmentQuizBinding.inflate(inflater, container, false)
 
+        val view = binding.root
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         var indexOfChosenAnswer = 0
+        var text = ""
 
         when (indexOfQuestion) {
             1 -> indexOfChosenAnswer = arguments?.getInt(FIRST_RESULT_KEY) ?: 0
@@ -41,9 +50,6 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
 
         if (indexOfQuestion == 1) viewBinding?.previousButton?.isEnabled = false
         viewBinding?.nextButton?.isEnabled = false
-
-
-
 
 
         var list = mutableListOf<String>()
@@ -62,46 +68,51 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
 
         var chosenAnswer = 0
 
+        if (indexOfChosenAnswer != 0) {
+            viewBinding?.radioGroup?.check(indexOfChosenAnswer)
+            viewBinding?.nextButton?.isEnabled = true
+            chosenAnswer = viewBinding?.radioGroup?.checkedRadioButtonId ?: 0
+
+        }
 
 
+
+
+//        if (viewBinding?.radioGroup?.checkedRadioButtonId !== -1) {
+//            viewBinding?.nextButton?.isEnabled = true
+//            chosenAnswer = viewBinding?.radioGroup?.checkedRadioButtonId ?: 0
+//        }
 
 
         viewBinding?.radioGroup?.setOnCheckedChangeListener { _, _ ->
 
             if (viewBinding?.radioGroup?.checkedRadioButtonId !== -1) {
-                viewBinding?.nextButton?.isEnabled =
-                    true
+                viewBinding?.nextButton?.isEnabled = true
                 chosenAnswer = viewBinding?.radioGroup?.checkedRadioButtonId ?: 0
+
+
+
+
             }
         }
 
         viewBinding?.nextButton?.setOnClickListener() {
-//            viewBinding?.radioGroup?.clearCheck()
-//            it.isEnabled = false
 
 
-            val arg = Bundle()
-            when (indexOfQuestion) {
-                1 -> arg.putInt(FIRST_RESULT_KEY, chosenAnswer)
-                2 -> arg.putInt(SECOND_RESULT_KEY, chosenAnswer)
-                3 -> arg.putInt(THIRD_RESULT_KEY, chosenAnswer)
-                4 -> arg.putInt(FORTH_RESULT_KEY, chosenAnswer)
-                5 -> arg.putInt(FIFTH_RESULT_KEY, chosenAnswer)
-            }
-            this.arguments = arg
+            text = (view.findViewById(chosenAnswer) as RadioButton).text.toString()
 
 
-            (activity as Comunicator)?.passData(indexOfQuestion + 1, chosenAnswer)
+            (activity as Comunicator)?.passData(indexOfQuestion , chosenAnswer, +1, text)
+
+
+
         }
 
         viewBinding?.previousButton?.setOnClickListener() {
-            (activity as Comunicator)?.passData(indexOfQuestion - 1, chosenAnswer)
+
+            if (chosenAnswer != 0) text = (view.findViewById(chosenAnswer) as RadioButton).text.toString()
+            (activity as Comunicator)?.passData(indexOfQuestion , chosenAnswer, -1, text)
         }
-
-
-        val view = binding.root
-
-        return view
     }
 
     override fun onAttach(context: Context) {
@@ -123,21 +134,17 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         private const val FORTH_RESULT_KEY = "FORTH_RESULT"
         private const val FIFTH_RESULT_KEY = "FIFTH_RESULT"
 
-        fun newInstance(index: Int, chosenAnswer: Int): FragmentQuiz {
+        fun newInstance(index: Int, list: MutableList<Int>): FragmentQuiz {
             val fragment = FragmentQuiz()
             fragment.indexOfQuestion = index
-//            val args = Bundle()
-//            when (index) {
-//                1 -> args.putInt(FIRST_RESULT_KEY, chosenAnswer)
-//                2 -> args.putInt(SECOND_RESULT_KEY, chosenAnswer)
-//                3 -> args.putInt(THIRD_RESULT_KEY, chosenAnswer)
-//                4 -> args.putInt(FORTH_RESULT_KEY, chosenAnswer)
-//                5 -> args.putInt(FIFTH_RESULT_KEY, chosenAnswer)
-//            }
-//            fragment.arguments = args
+            val args = Bundle()
+            args.putInt(FIRST_RESULT_KEY, list[1])
+            args.putInt(SECOND_RESULT_KEY, list[2])
+            args.putInt(THIRD_RESULT_KEY, list[3])
+            args.putInt(FORTH_RESULT_KEY, list[4])
+            args.putInt(FIFTH_RESULT_KEY, list[5])
+            fragment.arguments = args
             return fragment
-
         }
     }
-
 }

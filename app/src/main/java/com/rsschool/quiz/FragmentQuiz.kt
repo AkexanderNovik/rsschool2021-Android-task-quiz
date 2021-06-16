@@ -7,16 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.rsschool.quiz.databinding.FragmentQuizBinding
 
 
 class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
     private var viewBinding: FragmentQuizBinding? = null
-//    private val binding get() = requireNotNull(viewBinding)
     private val binding get() = requireNotNull(viewBinding)
     private var indexOfQuestion = 1
     private var listener: Comunicator? = null
+    private lateinit var callback: OnBackPressedCallback
 
 
     override fun onCreateView(
@@ -111,7 +112,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
             text = (view.findViewById(chosenAnswer) as RadioButton).text.toString()
 
 
-            (activity as Comunicator)?.passData(indexOfQuestion , chosenAnswer, +1, text)
+            listener?.passData(indexOfQuestion , chosenAnswer, +1, text)
 
 
 
@@ -120,7 +121,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         viewBinding?.previousButton?.setOnClickListener() {
 
             if (chosenAnswer != 0) text = (view.findViewById(chosenAnswer) as RadioButton).text.toString()
-            (activity as Comunicator)?.passData(indexOfQuestion , chosenAnswer, -1, text)
+            listener?.passData(indexOfQuestion , chosenAnswer, -1, text)
         }
 
 
@@ -132,19 +133,33 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         viewBinding?.toolbar?.setNavigationOnClickListener {
             if (chosenAnswer != 0) text =
                 (view.findViewById(chosenAnswer) as RadioButton).text.toString()
-            (activity as Comunicator)?.passData(indexOfQuestion, chosenAnswer, -1, text)
+            listener?.passData(indexOfQuestion, chosenAnswer, -1, text)
         }
+
+
+        callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                if (indexOfQuestion !== 1) {
+                    if (chosenAnswer != 0) text =
+                        (view.findViewById(chosenAnswer) as RadioButton).text.toString()
+                    listener?.passData(indexOfQuestion, chosenAnswer, -1, text)
+                }
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = activity as MainActivity
+        listener = activity as Comunicator
     }
 
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDetach() {
+        super.onDetach()
         viewBinding = null
+        callback.remove()
     }
 
     companion object {

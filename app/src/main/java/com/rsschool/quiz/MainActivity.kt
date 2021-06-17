@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity(), Comunicator {
         list= mutableListOf<Int>(0,0,0,0,0,0)
         openFragment(1, list)
 
-        supportActionBar
+//        supportActionBar
     }
 
     private fun openFragment(questionNumber: Int, list: MutableList <Int>) {

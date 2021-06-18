@@ -15,6 +15,10 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
     private var viewBinding: FragmentQuizBinding? = null
     private val binding get() = requireNotNull(viewBinding)
     private var indexOfQuestion = 1
+    private var indexOfChosenAnswer = 0
+    private var text = ""
+    private var chosenAnswer = 0
+    private var list = mutableListOf<String>()
     private var listener: Comunicator? = null
     private lateinit var callback: OnBackPressedCallback
 
@@ -48,11 +52,6 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var indexOfChosenAnswer = 0
-        var text = ""
-        var chosenAnswer = 0
-        var list = mutableListOf<String>()
-
         when (indexOfQuestion) {
             1 -> indexOfChosenAnswer = arguments?.getInt(FIRST_RESULT_KEY) ?: 0
             2 -> indexOfChosenAnswer = arguments?.getInt(SECOND_RESULT_KEY) ?: 0
@@ -69,7 +68,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
             viewBinding?.toolbar?.navigationIcon = null
         }
 
-        if (indexOfQuestion == 5) viewBinding?.nextButton?.text = "Commit"
+        if (indexOfQuestion == 5) viewBinding?.nextButton?.text = "Submit"
         viewBinding?.nextButton?.isEnabled = false
 
         when (indexOfQuestion) {
@@ -102,21 +101,16 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
             }
         }
 
-        viewBinding?.nextButton?.setOnClickListener() {
-            text = (view.findViewById(chosenAnswer) as RadioButton).text.toString()
-            listener?.passData(indexOfQuestion, chosenAnswer, +1, text)
+        viewBinding?.nextButton?.setOnClickListener {
+            proceedNeededAction(1)
         }
 
-        viewBinding?.previousButton?.setOnClickListener() {
-            if (chosenAnswer != 0) text =
-                (view.findViewById(chosenAnswer) as RadioButton).text.toString()
-            listener?.passData(indexOfQuestion, chosenAnswer, -1, text)
+        viewBinding?.previousButton?.setOnClickListener {
+            if (chosenAnswer != 0) proceedNeededAction(-1)
         }
 
         viewBinding?.toolbar?.setNavigationOnClickListener {
-            if (chosenAnswer != 0) text =
-                (view.findViewById(chosenAnswer) as RadioButton).text.toString()
-            listener?.passData(indexOfQuestion, chosenAnswer, -1, text)
+            if (chosenAnswer != 0) proceedNeededAction(-1)
         }
 
         callback = object : OnBackPressedCallback(true) {
@@ -141,6 +135,11 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         super.onDetach()
         listener = null
         callback.remove()
+    }
+
+    private fun proceedNeededAction(i: Int) {
+        text = (view?.findViewById(chosenAnswer) as RadioButton).text.toString()
+        listener?.passData(indexOfQuestion, chosenAnswer, i, text)
     }
 
     companion object {

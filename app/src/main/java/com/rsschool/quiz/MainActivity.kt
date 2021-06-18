@@ -8,9 +8,9 @@ import com.rsschool.quiz.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), Comunicator {
 
     private lateinit var binding: ActivityMainBinding
-    private var list = mutableListOf<Int>(0, 0, 0, 0, 0, 0)
+    private var list = mutableListOf(0, 0, 0, 0, 0, 0)
 
-    private var userAnswers = mutableListOf<String>("", "", "", "", "", "")
+    private var userAnswers = mutableListOf("", "", "", "", "", "")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,10 +18,7 @@ class MainActivity : AppCompatActivity(), Comunicator {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-//        list = mutableListOf<Int>(0, 0, 0, 0, 0, 0)
         openFragment(1, list)
-
-//        supportActionBar
     }
 
     private fun openFragment(questionNumber: Int, list: MutableList<Int>) {

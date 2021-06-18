@@ -25,7 +25,7 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewBinding = FragmentResultBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -34,13 +34,12 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
         super.onViewCreated(view, savedInstanceState)
 
         val result = calculatePercentageOfCorrectAnswers()
-        val resultText = formResult(result)
-        viewBinding?.resultTextTile?.text = "Your result: $result %"
+        val resultText = formResult()
+        viewBinding?.resultTextTile?.text = result
         viewBinding?.resultText?.text = resultText
 
 
         viewBinding?.goBack?.setOnClickListener {
-//            activity?.recreate()
             listener?.passData(indexOfQuestion, indexOfQuestion, 0, "")
         }
 
@@ -54,14 +53,9 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
                 data = Uri.parse("mailto:")
                 type = "text/plain"
                 putExtra(Intent.EXTRA_SUBJECT, "Quiz result")
-//                putExtra(Intent.EXTRA_TEXT, "Your result:\n result")
-                putExtra(Intent.EXTRA_TEXT, resultText)
-
+                putExtra(Intent.EXTRA_TEXT, "$result $resultText")
             }
             startActivity(intent)
-//            if (intent.resolveActivity(packageManager) != null) {
-//                startActivity(intent)
-//            }
         }
 
 
@@ -71,7 +65,6 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-
     }
 
     private fun calculatePercentageOfCorrectAnswers(): String {
@@ -81,18 +74,16 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
                 numberOfCorrectAnswers += 1
             }
         }
-        return (numberOfCorrectAnswers * 100 / 5).toString()
+        return "Your result: ${(numberOfCorrectAnswers * 100 / 5)} %"
     }
 
-    private fun formResult(result:String): String{
+    private fun formResult(): String{
         var formedResult = ""
-
-        formedResult = "Your result: $result %."
 
         for (i in 1 until correctAnswers.size) {
             formedResult = formedResult.plus(
                 "\n\n Question $i) \n" +
-                        " Your answer: " + userAnswers[i]+"\n Correct answer: "+ correctAnswers[i] )
+                        " Your answer: " + userAnswers[i]+"\n Correct answer: "+ correctAnswers[i])
         }
         return formedResult
     }
@@ -110,11 +101,9 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
     }
 
     companion object {
-
         fun newInstance(list: MutableList<String>): FragmentResult {
             val fragment = FragmentResult()
             fragment.userAnswers = list
-
             return fragment
         }
     }

@@ -2,7 +2,6 @@ package com.rsschool.quiz
 
 import android.content.Context
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,18 +23,10 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
+    ): View {
         setTheme()
-
-
         viewBinding = FragmentQuizBinding.inflate(inflater, container, false)
-
-        val view = binding.root
-
-
-
-        return view
+        return binding.root
     }
 
     private fun setTheme() {
@@ -60,6 +51,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         var indexOfChosenAnswer = 0
         var text = ""
         var chosenAnswer = 0
+        var list = mutableListOf<String>()
 
         when (indexOfQuestion) {
             1 -> indexOfChosenAnswer = arguments?.getInt(FIRST_RESULT_KEY) ?: 0
@@ -80,9 +72,6 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         if (indexOfQuestion == 5) viewBinding?.nextButton?.text = "Commit"
         viewBinding?.nextButton?.isEnabled = false
 
-
-        var list = mutableListOf<String>()
-
         when (indexOfQuestion) {
             1 -> list = DataValues().arrayFirstQuestion.toMutableList()
             2 -> list = DataValues().arraySecondQuestion.toMutableList()
@@ -98,21 +87,12 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         viewBinding?.optionFour?.text = list[4]
         viewBinding?.optionFive?.text = list[5]
 
-
-
         if (indexOfChosenAnswer != 0) {
             viewBinding?.radioGroup?.check(indexOfChosenAnswer)
             viewBinding?.nextButton?.isEnabled = true
             chosenAnswer = viewBinding?.radioGroup?.checkedRadioButtonId ?: 0
 
         }
-
-
-//        if (viewBinding?.radioGroup?.checkedRadioButtonId !== -1) {
-//            viewBinding?.nextButton?.isEnabled = true
-//            chosenAnswer = viewBinding?.radioGroup?.checkedRadioButtonId ?: 0
-//        }
-
 
         viewBinding?.radioGroup?.setOnCheckedChangeListener { _, _ ->
 
@@ -123,32 +103,21 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         }
 
         viewBinding?.nextButton?.setOnClickListener() {
-
-
             text = (view.findViewById(chosenAnswer) as RadioButton).text.toString()
-
-
             listener?.passData(indexOfQuestion, chosenAnswer, +1, text)
-
-
         }
 
         viewBinding?.previousButton?.setOnClickListener() {
-
             if (chosenAnswer != 0) text =
                 (view.findViewById(chosenAnswer) as RadioButton).text.toString()
             listener?.passData(indexOfQuestion, chosenAnswer, -1, text)
         }
-
-
-//
 
         viewBinding?.toolbar?.setNavigationOnClickListener {
             if (chosenAnswer != 0) text =
                 (view.findViewById(chosenAnswer) as RadioButton).text.toString()
             listener?.passData(indexOfQuestion, chosenAnswer, -1, text)
         }
-
 
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -167,7 +136,6 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         super.onAttach(context)
         listener = activity as Comunicator
     }
-
 
     override fun onDetach() {
         super.onDetach()

@@ -1,8 +1,8 @@
 package com.rsschool.quiz
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +30,8 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         viewBinding = FragmentQuizBinding.inflate(inflater, container, false)
 
         val view = binding.root
+
+
 
         return view
     }

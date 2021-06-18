@@ -8,10 +8,9 @@ import com.rsschool.quiz.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), Comunicator {
 
     private lateinit var binding: ActivityMainBinding
-    private var list= mutableListOf<Int>(0,0,0,0,0,0)
+    private var list = mutableListOf<Int>(0, 0, 0, 0, 0, 0)
 
-    private var userAnswers = mutableListOf<String>("","","","","","")
-
+    private var userAnswers = mutableListOf<String>("", "", "", "", "", "")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,30 +18,32 @@ class MainActivity : AppCompatActivity(), Comunicator {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        list= mutableListOf<Int>(0,0,0,0,0,0)
+//        list = mutableListOf<Int>(0, 0, 0, 0, 0, 0)
         openFragment(1, list)
 
-        supportActionBar
+//        supportActionBar
     }
 
-    private fun openFragment(questionNumber: Int, list: MutableList <Int>) {
-        val fragment: Fragment = FragmentQuiz.newInstance(questionNumber, list)
+    private fun openFragment(questionNumber: Int, list: MutableList<Int>) {
+
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment).commit()
+        if (questionNumber != 6) {
+            val fragment: Fragment = FragmentQuiz.newInstance(questionNumber, list)
+            transaction.replace(R.id.container, fragment).commit()
+        } else {
+            transaction.replace(R.id.container, FragmentResult.newInstance(userAnswers)).commit()
+        }
     }
 
     override fun passData(questionNumber: Int, chosenAnswer: Int, i: Int, text: String) {
-        list[questionNumber] = chosenAnswer
-        userAnswers[questionNumber] = text
-        userAnswers
-        userAnswers
-
-        openFragment(questionNumber + i, list)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        list
-        userAnswers
+        if (questionNumber == 0) {
+            list.fill(0)
+            userAnswers.fill("")
+            openFragment(1, list)
+        } else {
+            list[questionNumber] = chosenAnswer
+            userAnswers[questionNumber] = text
+            openFragment(questionNumber + i, list)
+        }
     }
 }

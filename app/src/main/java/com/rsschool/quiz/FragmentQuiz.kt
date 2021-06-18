@@ -26,6 +26,8 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         savedInstanceState: Bundle?
     ): View? {
 
+        setTheme()
+
 
         viewBinding = FragmentQuizBinding.inflate(inflater, container, false)
 
@@ -36,6 +38,20 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         return view
     }
 
+    private fun setTheme() {
+        when (indexOfQuestion) {
+            1 -> setThemeAndStatusBarColor(R.style.Theme_Quiz_First, R.color.deep_orange_100_dark)
+            2 -> setThemeAndStatusBarColor(R.style.Theme_Quiz_Second, R.color.yellow_100_dark)
+            3 -> setThemeAndStatusBarColor(R.style.Theme_Quiz_Third, R.color.light_green_100_dark)
+            4 -> setThemeAndStatusBarColor(R.style.Theme_Quiz_Fourth, R.color.cyan_100_dark)
+            5 -> setThemeAndStatusBarColor(R.style.Theme_Quiz_Fifth, R.color.deep_purple_100_dark)
+        }
+    }
+
+    private fun setThemeAndStatusBarColor(style: Int, statusBarColor: Int) {
+        activity?.setTheme(style)
+        activity?.window?.statusBarColor = resources.getColor(statusBarColor, activity?.theme)
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,10 +74,10 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
 
         if (indexOfQuestion == 1) {
             viewBinding?.previousButton?.isEnabled = false
-            viewBinding?.toolbar?.setNavigationIcon(null)
-
-
+            viewBinding?.toolbar?.navigationIcon = null
         }
+
+        if (indexOfQuestion == 5) viewBinding?.nextButton?.text = "Commit"
         viewBinding?.nextButton?.isEnabled = false
 
 
@@ -70,7 +86,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         when (indexOfQuestion) {
             1 -> list = DataValues().arrayFirstQuestion.toMutableList()
             2 -> list = DataValues().arraySecondQuestion.toMutableList()
-            3-> list = DataValues().arrayThirdQuestion.toMutableList()
+            3 -> list = DataValues().arrayThirdQuestion.toMutableList()
             4 -> list = DataValues().arrayFourthQuestion.toMutableList()
             5 -> list = DataValues().arrayFifthQuestion.toMutableList()
         }
@@ -90,8 +106,6 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
             chosenAnswer = viewBinding?.radioGroup?.checkedRadioButtonId ?: 0
 
         }
-
-
 
 
 //        if (viewBinding?.radioGroup?.checkedRadioButtonId !== -1) {
@@ -114,20 +128,17 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
             text = (view.findViewById(chosenAnswer) as RadioButton).text.toString()
 
 
-            listener?.passData(indexOfQuestion , chosenAnswer, +1, text)
-
+            listener?.passData(indexOfQuestion, chosenAnswer, +1, text)
 
 
         }
 
         viewBinding?.previousButton?.setOnClickListener() {
 
-            if (chosenAnswer != 0) text = (view.findViewById(chosenAnswer) as RadioButton).text.toString()
-            listener?.passData(indexOfQuestion , chosenAnswer, -1, text)
+            if (chosenAnswer != 0) text =
+                (view.findViewById(chosenAnswer) as RadioButton).text.toString()
+            listener?.passData(indexOfQuestion, chosenAnswer, -1, text)
         }
-
-
-
 
 
 //
@@ -139,7 +150,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         }
 
 
-        callback = object : OnBackPressedCallback(true){
+        callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (indexOfQuestion !== 1) {
                     if (chosenAnswer != 0) text =
@@ -160,7 +171,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
 
     override fun onDetach() {
         super.onDetach()
-        viewBinding = null
+        listener = null
         callback.remove()
     }
 
@@ -169,7 +180,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         private const val FIRST_RESULT_KEY = "FIRST_RESULT"
         private const val SECOND_RESULT_KEY = "SECOND_RESULT"
         private const val THIRD_RESULT_KEY = "THIRD_RESULT"
-        private const val FORTH_RESULT_KEY = "FORTH_RESULT"
+        private const val FORTH_RESULT_KEY = "FOURTH_RESULT"
         private const val FIFTH_RESULT_KEY = "FIFTH_RESULT"
 
         fun newInstance(index: Int, list: MutableList<Int>): FragmentQuiz {

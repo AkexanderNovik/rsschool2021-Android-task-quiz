@@ -35,7 +35,9 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
 
         val result = calculatePercentageOfCorrectAnswers()
         val resultText = formResult(result)
-        viewBinding?.resultText?.text = "Your result: $result %"
+        viewBinding?.resultTextTile?.text = "Your result: $result %"
+        viewBinding?.resultText?.text = resultText
+
 
         viewBinding?.goBack?.setOnClickListener {
 //            activity?.recreate()

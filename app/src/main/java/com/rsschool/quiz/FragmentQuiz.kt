@@ -94,8 +94,7 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         }
 
         viewBinding?.radioGroup?.setOnCheckedChangeListener { _, _ ->
-
-            if (viewBinding?.radioGroup?.checkedRadioButtonId !== -1) {
+            if (viewBinding?.radioGroup?.checkedRadioButtonId != -1) {
                 viewBinding?.nextButton?.isEnabled = true
                 chosenAnswer = viewBinding?.radioGroup?.checkedRadioButtonId ?: 0
             }
@@ -106,23 +105,18 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         }
 
         viewBinding?.previousButton?.setOnClickListener {
-            if (chosenAnswer != 0) proceedNeededAction(-1)
+            proceedNeededAction(-1)
         }
 
         viewBinding?.toolbar?.setNavigationOnClickListener {
-            if (chosenAnswer != 0) proceedNeededAction(-1)
+            proceedNeededAction(-1)
         }
 
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (indexOfQuestion !== 1) {
-                    if (chosenAnswer != 0) text =
-                        (view.findViewById(chosenAnswer) as RadioButton).text.toString()
-                    listener?.passData(indexOfQuestion, chosenAnswer, -1, text)
-                }
+                if (indexOfQuestion != 1) proceedNeededAction(-1)
             }
         }
-
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
@@ -131,14 +125,15 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
         listener = activity as Comunicator
     }
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onDestroyView() {
+        super.onDestroyView()
         listener = null
         callback.remove()
+        viewBinding = null
     }
 
     private fun proceedNeededAction(i: Int) {
-        text = (view?.findViewById(chosenAnswer) as RadioButton).text.toString()
+        if (chosenAnswer != 0) text = (view?.findViewById(chosenAnswer) as RadioButton).text.toString()
         listener?.passData(indexOfQuestion, chosenAnswer, i, text)
     }
 

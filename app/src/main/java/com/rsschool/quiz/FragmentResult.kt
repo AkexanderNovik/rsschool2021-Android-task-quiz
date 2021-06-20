@@ -20,6 +20,7 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
     private var listener: Comunicator? = null
     private lateinit var userAnswers: MutableList<String>
     private val correctAnswers = DataValues().arrayCorrectAnswers
+    private val arrayQuestions = DataValues().arrayQuestions
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,13 +78,14 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
         return "Your result: ${(numberOfCorrectAnswers * 100 / 5)} %"
     }
 
-    private fun formResult(): String{
+    private fun formResult(): String {
         var formedResult = ""
 
         for (i in 1 until correctAnswers.size) {
             formedResult = formedResult.plus(
-                "\n\n Question $i) \n" +
-                        " Your answer: " + userAnswers[i]+"\n Correct answer: "+ correctAnswers[i])
+                "\n\n Question $i) ${arrayQuestions[i]} \n" +
+                        " Your answer: " + userAnswers[i] + "\n Correct answer: " + correctAnswers[i]
+            )
         }
         return formedResult
     }
@@ -94,10 +96,11 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
         listener = activity as Comunicator
     }
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onDestroyView() {
+        super.onDestroyView()
         listener = null
         callback.remove()
+        viewBinding = null
     }
 
     companion object {

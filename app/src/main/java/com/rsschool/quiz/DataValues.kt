@@ -96,4 +96,14 @@ class DataValues {
         FOURTH_QUESTION_CORRECT_ANSWER,
         FIFTH_QUESTION_CORRECT_ANSWER
     )
+
+    val arrayQuestions= listOf(
+        "",
+        FIRST_QUESTION,
+        SECOND_QUESTION,
+        THIRD_QUESTION,
+        FOURTH_QUESTION,
+        FIFTH_QUESTION
+    )
+
 }

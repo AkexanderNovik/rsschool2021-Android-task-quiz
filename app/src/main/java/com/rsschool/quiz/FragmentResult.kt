@@ -97,10 +97,10 @@ class FragmentResult : Fragment(R.layout.fragment_result) {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         listener = null
         callback.remove()
         viewBinding = null
+        super.onDestroyView()
     }
 
     companion object {

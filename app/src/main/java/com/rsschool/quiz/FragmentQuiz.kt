@@ -126,10 +126,10 @@ class FragmentQuiz : Fragment(R.layout.fragment_quiz) {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         listener = null
         callback.remove()
         viewBinding = null
+        super.onDestroyView()
     }
 
     private fun proceedNeededAction(i: Int) {
